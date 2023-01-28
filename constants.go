@@ -1,4 +1,4 @@
-package env
+package sasapay
 
 type Environment uint8
 
