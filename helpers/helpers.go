@@ -9,6 +9,7 @@ import (
 )
 
 var contentyTypeHeaderJson = []byte("application/json")
+
 func NewReq(url string, body *[]byte, headers *map[string]string) (string, error) {
 	readTimeout, _ := time.ParseDuration("15s")
 	writeTimeout, _ := time.ParseDuration("15s")
@@ -54,8 +55,6 @@ func NewReq(url string, body *[]byte, headers *map[string]string) (string, error
 	}
 	// RELEASE RESOURCES.
 	fasthttp.ReleaseRequest(req)
-	fasthttp.ReleaseResponse(resp)
-
 	return string(resp.Body()), nil
 }
 
