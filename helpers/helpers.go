@@ -10,7 +10,7 @@ import (
 
 var contentyTypeHeaderJson = []byte("application/json")
 
-func NewReq(url string, body *[]byte, headers *map[string]string) (string, error) {
+func NewReq(url string, body *[]byte, headers *map[string]string) (*fasthttp.Response, error) {
 	readTimeout, _ := time.ParseDuration("15s")
 	writeTimeout, _ := time.ParseDuration("15s")
 	maxIdleConnDuration, _ := time.ParseDuration("30m")
@@ -55,7 +55,7 @@ func NewReq(url string, body *[]byte, headers *map[string]string) (string, error
 	}
 	// RELEASE RESOURCES.
 	fasthttp.ReleaseRequest(req)
-	return string(resp.Body()), nil
+	return resp, nil
 }
 
 // 	if err == nil {

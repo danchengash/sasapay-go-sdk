@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/salticon/sasapay-golang/helpers"
+	"github.com/salticon/sasapay-golang/models"
 )
 
 type SasaPay struct {
@@ -25,7 +26,7 @@ func NewSasaPay(clientId string, clientSecret string, environment int) SasaPay {
 
 // setAccessToken returns a time bound access token to call allowed APIs.
 // This token should be used in all other subsequent responses to the APIs
-func (s *SasaPay) SetAccessToken() {
+func (s *SasaPay) SetAccessToken() (*AccessTokenResponse, error) {
 	url := s.baseURL() + SetAccessTokenUrl
 	b := []byte(s.ClientId + ":" + s.ClientSecret)
 	encoded := base64.StdEncoding.EncodeToString(b)
@@ -34,6 +35,7 @@ func (s *SasaPay) SetAccessToken() {
 	res, err := helpers.NewReq(url, nil, &headers)
 	if err != nil {
 		fmt.Println(err)
+		return nil, &models.RequestError{StatusCode: res.StatusCode(), Message: string(res.Body()), Url: res.LocalAddr().String()}
 	}
 
 	fmt.Println("____+++++++++++_____")
