@@ -26,7 +26,7 @@ func NewSasaPay(clientId string, clientSecret string, environment int) SasaPay {
 // setAccessToken returns a time bound access token to call allowed APIs.
 // This token should be used in all other subsequent responses to the APIs
 func (s *SasaPay) SetAccessToken() {
-	url := s.baseURL() + "auth/token/?grant_type=client_credentials"
+	url := s.baseURL() + SetAccessTokenUrl
 	b := []byte(s.ClientId + ":" + s.ClientSecret)
 	encoded := base64.StdEncoding.EncodeToString(b)
 	headers := make(map[string]string)
