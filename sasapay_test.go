@@ -16,7 +16,6 @@ func TestSetAccessToken(t *testing.T) {
 func TestC2B(t *testing.T) {
 	sasapay := sasapay.NewSasaPay(clientId, clientSecret, int(sasapay.Sandbox))
 	sasapay.Customer2Business(models.C2BRequest{
-
 		MerchantCode:     "600980",
 		Currency:         "KES",
 		NetworkCode:      "0",
