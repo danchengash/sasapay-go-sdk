@@ -81,7 +81,31 @@ func (s *SasaPay) RegisterCallBackUrl(merchantcode string, confirmationUrl strin
 	return &resp, nil
 }
 
-func (s *SasaPay)
+func (s *SasaPay) Customer2Business(body models.C2BRequest) (*models.C2BResponse, error) {
+	token, err := s.setAccessToken()
+	if err != nil {
+		return nil, err
+	}
+	headers := make(map[string]string)
+	headers["Authorization"] = "Bearer " + token
+	url := s.baseURL() + c2burl
+	reqbody, err := body.Marshal()
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := helpers.NewReq(url, &reqbody, &headers)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := models.UnmarshalC2BResponse(res.Body())
+	if err != nil {
+		return nil, err
+	}
+
+	return &resp, nil
+
+}
 
 func (s *SasaPay) baseURL() string {
 	if s.Environment == int(Production) {
