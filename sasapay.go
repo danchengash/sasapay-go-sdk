@@ -3,6 +3,7 @@ package sasapay
 import (
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"time"
 
@@ -104,19 +105,26 @@ func (s *SasaPay) Customer2Business(body models.C2BRequest) (*models.C2BResponse
 		return nil, err
 	}
 
-	res, err := helpers.NewReq(url, &reqbody, &headers)
+	resp, err := helpers.NewReq(url, &reqbody, &headers)
 	if err != nil {
 		return nil, err
 	}
-	resp, err := models.UnmarshalC2BResponse(res.Body())
+	if resp.StatusCode() != 200 {
+		errRespose, err := models.UnmarshalAPIResponse(resp.Body())
+		if err != nil {
+			return nil, errors.New(string(resp.Body()))
+		}
+		return nil, errors.New(errRespose.Detail)
+	}
+	response, err := models.UnmarshalC2BResponse(resp.Body())
 	if err != nil {
 		return nil, err
 	}
 
-	return &resp, nil
+	return &response, nil
 
 }
-func (s *SasaPay) C2BProces(checkoutRequestID string, otpCode string) (resp *models.APIResponse, err error) {
+func (s *SasaPay) C2BProces(checkoutRequestID string, otpCode string) (*models.APIResponse, error) {
 	params := make(map[string]interface{})
 	params["CheckoutRequestID"] = checkoutRequestID
 	params["MerchantCode"] = s.MerchantCode
@@ -131,11 +139,18 @@ func (s *SasaPay) C2BProces(checkoutRequestID string, otpCode string) (resp *mod
 	url := s.baseURL() + c2bProcess
 
 	paramsBytes, _ := json.Marshal(params)
-	res, err := helpers.NewReq(url, &paramsBytes, &headers)
+	resp, err := helpers.NewReq(url, &paramsBytes, &headers)
 	if err != nil {
 		return nil, err
 	}
-	response, err := models.UnmarshalAPIResponse(res.Body())
+	if resp.StatusCode() != 200 {
+		errRespose, err := models.UnmarshalAPIResponse(resp.Body())
+		if err != nil {
+			return nil, errors.New(string(resp.Body()))
+		}
+		return nil, errors.New(errRespose.Detail)
+	}
+	response, err := models.UnmarshalAPIResponse(resp.Body())
 	if err != nil {
 		return nil, err
 	}
@@ -145,7 +160,7 @@ func (s *SasaPay) C2BProces(checkoutRequestID string, otpCode string) (resp *mod
 
 /// look at the README File to get a list of all the channel codes
 
-func (s *SasaPay) B2CRequest(params models.B2CRequest) (*models.B2CResponse, error) {
+func (s *SasaPay) Business2Customer(params models.B2CRequest) (*models.B2CResponse, error) {
 	token, err := s.setAccessToken()
 	if err != nil {
 		return nil, err
@@ -160,9 +175,18 @@ func (s *SasaPay) B2CRequest(params models.B2CRequest) (*models.B2CResponse, err
 	if err != nil {
 		return nil, err
 	}
+
+	if resp.StatusCode() != 200 {
+		errRespose, err := models.UnmarshalAPIResponse(resp.Body())
+		if err != nil {
+			return nil, errors.New(string(resp.Body()))
+		}
+		return nil, errors.New(errRespose.Detail)
+	}
 	response, err := models.UnmarshalB2CResponse(resp.Body())
 	if err != nil {
 		return nil, err
 	}
+
 	return &response, nil
 }

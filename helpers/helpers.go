@@ -37,7 +37,6 @@ func NewReq(url string, body *[]byte, headers *map[string]string, debug ...bool)
 			req.Header.Set(key, value)
 		}
 	}
-
 	//GET REQUEST.
 	if body == nil {
 		req.Header.SetMethod(fasthttp.MethodGet)
@@ -63,48 +62,3 @@ func NewReq(url string, body *[]byte, headers *map[string]string, debug ...bool)
 	return resp, nil
 }
 
-// 	if err == nil {
-// 		fmt.Printf("DEBUG Response: %s\n", resp.Body())
-// 	} else {
-// 		fmt.Fprintf(os.Stderr, "ERR Connection error: %v\n", err)
-// 	}
-// 	fasthttp.ReleaseResponse(resp)
-
-// 	reqEntity := &Entity{
-// 		Name: "New entity",
-// 	}
-// 	reqEntityBytes, _ := json.Marshal(reqEntity)
-
-// 	req := fasthttp.AcquireRequest()
-// 	req.SetRequestURI("http://localhost:8080/")
-// 	req.Header.SetMethod(fasthttp.MethodPost)
-// 	req.SetBodyRaw(reqEntityBytes)
-// 	resp := fasthttp.AcquireResponse()
-// 	err := client.DoTimeout(req, resp, reqTimeout)
-// 	fasthttp.ReleaseRequest(req)
-
-// 	request, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(body))
-// 	if err != nil {
-// 		return "", nil
-// 	}
-
-// 	for key, value := range headers {
-// 		request.Header.Set(key, value)
-// 	}
-
-// 	client := &http.Client{Timeout: 60 * time.Second}
-// 	res, err := client.Do(request)
-// 	if res != nil {
-// 		defer res.Body.Close()
-// 	}
-// 	if err != nil {
-// 		return "", err
-// 	}
-
-// 	stringBody, err := ioutil.ReadAll(res.Body)
-// 	if err != nil {
-// 		return "", err
-// 	}
-
-// 	return string(stringBody), nil
-// }
