@@ -53,8 +53,8 @@ func NewReq(url string, body *[]byte, headers *map[string]string, debug ...bool)
 
 	}
 	if len(debug) == 0  {
-		fmt.Printf("[HEADER]: %s[Body is]: %s\n", &req.Header, req.Body())
-		fmt.Printf("[CODE]: %d [RESPONSE IS]: %s\n", resp.StatusCode(), resp.Body())
+		fmt.Printf("[HEADER]: %s[BODY]: %s\n", &req.Header, req.Body())
+		fmt.Printf("[CODE]: %d [RESPONSE]: %s\n", resp.StatusCode(), resp.Body())
 
 	}
 

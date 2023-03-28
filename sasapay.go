@@ -14,15 +14,17 @@ type SasaPay struct {
 	Environment  int
 	ClientId     string
 	ClientSecret string
+	MerchantCode string
 	cacheToken   models.AccessTokenResponse
 }
 
-func NewSasaPay(clientId string, clientSecret string, environment int) SasaPay {
+func NewSasaPay(clientId string, clientSecret string, merchantcode string, environment int) SasaPay {
 	var accessToken = models.AccessTokenResponse{}
 
 	return SasaPay{
 		ClientId:     clientId,
 		ClientSecret: clientSecret,
+		MerchantCode: merchantcode,
 		Environment:  environment,
 		cacheToken:   accessToken,
 	}
@@ -33,6 +35,7 @@ func NewSasaPay(clientId string, clientSecret string, environment int) SasaPay {
 // This token should be used in all other subsequent responses to the APIs
 func (s *SasaPay) setAccessToken() (string, error) {
 	if time.Until(s.cacheToken.ExpiresAt.UTC()).Seconds() > 0 {
+		fmt.Println("cache token")
 		return s.cacheToken.AccessToken, nil
 	}
 	url := s.baseURL() + SetAccessTokenUrl
@@ -56,7 +59,14 @@ func (s *SasaPay) setAccessToken() (string, error) {
 	return s.cacheToken.AccessToken, nil
 }
 
-func (s *SasaPay) RegisterCallBackUrl(merchantcode string, confirmationUrl string) (*models.RegisterConfirmationURLResponse, error) {
+func (s *SasaPay) baseURL() string {
+	if s.Environment == int(Production) {
+		return "https://api.sasapay.me/api/v1/"
+	}
+	return "https://api.sasapay.me/api/v1/"
+}
+
+func (s *SasaPay) RegisterCallBackUrl(confirmationUrl string) (*models.RegisterConfirmationURLResponse, error) {
 	token, err := s.setAccessToken()
 	if err != nil {
 		return nil, err
@@ -64,7 +74,7 @@ func (s *SasaPay) RegisterCallBackUrl(merchantcode string, confirmationUrl strin
 
 	headers := make(map[string]string)
 	params := make(map[string]interface{})
-	params["MerchantCode"] = merchantcode
+	params["MerchantCode"] = s.MerchantCode
 	params["ConfirmationUrl"] = confirmationUrl
 	reqEntityBytes, _ := json.Marshal(params)
 	headers["Authorization"] = "Bearer " + token
@@ -106,10 +116,53 @@ func (s *SasaPay) Customer2Business(body models.C2BRequest) (*models.C2BResponse
 	return &resp, nil
 
 }
+func (s *SasaPay) C2BProces(checkoutRequestID string, otpCode string) (resp *models.APIResponse, err error) {
+	params := make(map[string]interface{})
+	params["CheckoutRequestID"] = checkoutRequestID
+	params["MerchantCode"] = s.MerchantCode
+	params["VerificationCode"] = otpCode
 
-func (s *SasaPay) baseURL() string {
-	if s.Environment == int(Production) {
-		return "https://api.sasapay.me/api/v1/"
+	token, err := s.setAccessToken()
+	if err != nil {
+		return nil, err
 	}
-	return "https://api.sasapay.me/api/v1/"
+	headers := make(map[string]string)
+	headers["Authorization"] = "Bearer " + token
+	url := s.baseURL() + c2bProcess
+
+	paramsBytes, _ := json.Marshal(params)
+	res, err := helpers.NewReq(url, &paramsBytes, &headers)
+	if err != nil {
+		return nil, err
+	}
+	response, err := models.UnmarshalAPIResponse(res.Body())
+	if err != nil {
+		return nil, err
+	}
+	return &response, nil
+
+}
+
+/// look at the README File to get a list of all the channel codes
+
+func (s *SasaPay) B2CRequest(params models.B2CRequest) (*models.B2CResponse, error) {
+	token, err := s.setAccessToken()
+	if err != nil {
+		return nil, err
+	}
+	headers := make(map[string]string)
+	headers["Authorization"] = "Bearer " + token
+	url := s.baseURL() + b2cUrl
+
+	body, _ := params.Marshal()
+
+	resp, err := helpers.NewReq(url, &body, &headers)
+	if err != nil {
+		return nil, err
+	}
+	response, err := models.UnmarshalB2CResponse(resp.Body())
+	if err != nil {
+		return nil, err
+	}
+	return &response, nil
 }
