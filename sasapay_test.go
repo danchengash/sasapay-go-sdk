@@ -95,3 +95,20 @@ func TestMerchantBalance(t *testing.T) {
 	}
 	t.Log(response.Data)
 }
+
+func TestBusiness2Benefiary(t *testing.T){
+	response,err := sp.Business2Benefiary(models.Business2BeneficiaryReq{
+		TransactionReference: "2323",
+		SenderMerchantCode: sp.MerchantCode,
+		ReceiverMerchantCode: "94000",
+		BeneficiaryAccountNumber: "254712345672",
+		Amount: 1,
+		TransactionFee: 1,
+		Reason: "test",
+		CallBackURL:"https://posthere.io/67df-4d9c-9386" ,
+	})
+	if err != nil {
+		t.Error(err)
+	}
+	t.Log(response.Message)
+}

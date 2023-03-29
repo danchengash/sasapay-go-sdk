@@ -307,3 +307,30 @@ func (s *SasaPay) CheckMerchantBalance() (*models.MerchantBalanceResp, error) {
 	}
 	return &response, nil
 }
+func (s *SasaPay) Business2Benefiary(params models.Business2BeneficiaryReq) (*models.Business2BeneficiaryResp, error) {
+	token, err := s.setAccessToken()
+	if err != nil {
+		return nil, err
+	}
+	headers := make(map[string]string)
+	headers["Authorization"] = "Bearer " + token
+	url := s.baseURL() + business2Beneficiary
+
+	body, _ := params.Marshal()
+	resp, err := helpers.NewReq(url, &body, &headers)
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode() != 200 {
+		errRespose, err := models.UnmarshalAPIRespSecond(resp.Body())
+		if err != nil {
+			return nil, errors.New(string(resp.Body()))
+		}
+		return nil, errors.New(errRespose.Message)
+	}
+	response, err := models.UnmarshalBusiness2BeneficiaryResp(resp.Body())
+	if err != nil {
+		return nil, err
+	}
+	return &response, nil
+}

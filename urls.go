@@ -10,4 +10,5 @@ const (
 	check_transaction_status = "transactions/status/"
 	verify_transaction       = "transactions/verify/"
 	check_merchant_balance   = "payments/check-balance/?MerchantCode="
+	business2Beneficiary     = "payments/b2c/beneficiary/"
 )
