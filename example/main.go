@@ -3,8 +3,8 @@ package main
 import (
 	"testing"
 
-	"github.com/salticon/sasapay-golang"
-	"github.com/salticon/sasapay-golang/models"
+	"github.com/danchengash/sasapay-go-sdk"
+	"github.com/danchengash/sasapay-go-sdk/models"
 )
 
 var clientId = "XXXXXXXXXXXXXXX"

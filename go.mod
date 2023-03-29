@@ -1,4 +1,6 @@
-module github.com/salticon/sasapay-golang
+
+module github.com/danchengash/sasapay-go-sdk
+
 
 go 1.19
 
@@ -8,3 +10,4 @@ require (
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.44.0 // indirect
 )
+
