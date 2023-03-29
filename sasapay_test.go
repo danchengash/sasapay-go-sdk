@@ -2,7 +2,6 @@ package sasapay_test
 
 import (
 	"testing"
-
 	"github.com/salticon/sasapay-golang"
 	"github.com/salticon/sasapay-golang/models"
 )
