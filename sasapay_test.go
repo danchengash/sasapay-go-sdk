@@ -48,10 +48,50 @@ func TestB2c(t *testing.T) {
 		ReceiverNumber:               "254703545191",
 		Channel:                      "0",
 		Reason:                       "test reason",
-		CallBackURL: "https://posthere.io/67df-4d9c-9386",
+		CallBackURL:                  "https://posthere.io/67df-4d9c-9386",
 	})
 	if err != nil {
 		t.Error(err)
 	}
 	t.Log(respone.Detail)
+}
+
+func TestB2B(t *testing.T) {
+	response, err := sp.Business2Business(models.B2BRequest{
+		MerchantCode:                 sp.MerchantCode,
+		MerchantTransactionReference: "uoiwp",
+		Currency:                     "KES",
+		Amount:                       1,
+		ReceiverMerchantCode:         "94000",
+		CallBackURL:                  "https://posthere.io/67df-4d9c-9386",
+		Reason:                       "test",
+	})
+	if err != nil {
+		t.Error(err)
+	}
+	t.Log(response.Detail)
+}
+
+func TestCheckTransactioStatus(t *testing.T) {
+	response, err := sp.CheckTransactionStatus("6e1e251f-afb0-****-a097-f1ae0e0b2ce6")
+	if err != nil {
+		t.Error(err)
+	}
+	t.Log(response.Data)
+}
+
+func TestVerifyTransaction(t *testing.T) {
+	response, err := sp.VerifyTransaction("CDKQYQHMD")
+	if err != nil {
+		t.Error(err)
+	}
+	t.Log(response.Data)
+}
+
+func TestMerchantBalance(t *testing.T) {
+	response, err := sp.CheckMerchantBalance()
+	if err != nil {
+		t.Error(err)
+	}
+	t.Log(response.Data)
 }
