@@ -124,7 +124,7 @@ func (s *SasaPay) Customer2Business(body models.C2BRequest) (*models.C2BResponse
 	return &response, nil
 
 }
-func (s *SasaPay) C2BProces(checkoutRequestID string, otpCode string) (*models.APIResponse, error) {
+func (s *SasaPay) C2BProcess(checkoutRequestID string, otpCode string) (*models.APIResponse, error) {
 	params := make(map[string]interface{})
 	params["CheckoutRequestID"] = checkoutRequestID
 	params["MerchantCode"] = s.MerchantCode
