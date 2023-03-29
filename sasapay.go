@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/salticon/sasapay-golang/helpers"
-	"github.com/salticon/sasapay-golang/models"
+	"github.com/danchengash/sasapay-go-sdk/helpers"
+	"github.com/danchengash/sasapay-go-sdk/models"
 )
 
 type SasaPay struct {
