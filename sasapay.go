@@ -19,10 +19,10 @@ type SasaPay struct {
 	cacheToken   models.AccessTokenResponse
 }
 
-func NewSasaPay(clientId string, clientSecret string, merchantcode string, environment int) SasaPay {
+func NewSasaPay(clientId string, clientSecret string, merchantcode string, environment int) *SasaPay {
 	var accessToken = models.AccessTokenResponse{}
 
-	return SasaPay{
+	return &SasaPay{
 		ClientId:     clientId,
 		ClientSecret: clientSecret,
 		MerchantCode: merchantcode,
