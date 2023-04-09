@@ -7,17 +7,21 @@ import (
 	"github.com/danchengash/sasapay-go-sdk/models"
 )
 
-var clientId = "XXXXXXXXXXXXXXX"
-var clientSecret = "XXXXXXXXXXXXXXXXXXX"
-var sp = sasapay.NewSasaPay(clientId, clientSecret, "123456", int(sasapay.Sandbox))
+var clientId = "XXXXXX"
+var clientSecret = "XXXXXXX"
+var sp = sasapay.NewSasaPay(clientId, clientSecret, "1234", int(sasapay.Production))
+
+func main(){
+	TestC2B(&testing.T{})
+}
 
 func TestC2B(t *testing.T) {
 	response, err := sp.Customer2Business(models.C2BRequest{
 
 		MerchantCode:     sp.MerchantCode,
 		Currency:         "KES",
-		NetworkCode:      "0",
-		PhoneNumber:      "254712345678",
+		NetworkCode:      "63902",
+		PhoneNumber:      "2547XXXX",
 		TransactionDesc:  "desc",
 		AccountReference: "ref",
 		Amount:           2,

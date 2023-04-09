@@ -62,7 +62,7 @@ func (s *SasaPay) setAccessToken() (string, error) {
 
 func (s *SasaPay) baseURL() string {
 	if s.Environment == int(Production) {
-		return "https://api.sasapay.me/api/v1/"
+		return "https://api.sasapay.app/api/v1/"
 	}
 	return "https://api.sasapay.me/api/v1/"
 }
