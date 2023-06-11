@@ -51,9 +51,12 @@ func NewReq(url string, body *[]byte, headers *map[string]string, debug ...bool)
 		fmt.Printf("<ERROR ->>: %s\n", err)
 
 	}
-	if len(debug) == 0  {
-		fmt.Printf("[HEADER]: %s[BODY]: %s\n", &req.Header, req.Body())
-		fmt.Printf("[CODE]: %d [RESPONSE]: %s\n", resp.StatusCode(), resp.Body())
+	if len(debug) == 0 {
+		fmt.Printf("-------------REQUEST START------------\n")
+		fmt.Printf("[BODY]: %s\n", req.Body())
+		fmt.Printf("[CODE]: %d\n[RESPONSE]: %s\n", resp.StatusCode(), resp.Body())
+		fmt.Printf("-------------REQUEST END------------\n")
+
 
 	}
 
@@ -61,4 +64,3 @@ func NewReq(url string, body *[]byte, headers *map[string]string, debug ...bool)
 	fasthttp.ReleaseRequest(req)
 	return resp, nil
 }
-

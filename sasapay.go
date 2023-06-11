@@ -56,7 +56,7 @@ func (s *SasaPay) setAccessToken() (string, error) {
 			return "", err
 		}
 	}
-	println(s.cacheToken.AccessToken)
+	
 	return s.cacheToken.AccessToken, nil
 }
 
@@ -329,6 +329,39 @@ func (s *SasaPay) Business2Benefiary(params models.Business2BeneficiaryReq) (*mo
 		return nil, errors.New(errRespose.Message)
 	}
 	response, err := models.UnmarshalBusiness2BeneficiaryResp(resp.Body())
+	if err != nil {
+		return nil, err
+	}
+	return &response, nil
+}
+func (s *SasaPay) AccountValidate(acct string, channel string) (*models.AccountValidationRes, error) {
+	token, err := s.setAccessToken()
+	if err != nil {
+		return nil, err
+	}
+	headers := make(map[string]string)
+	headers["Authorization"] = "Bearer " + token
+	url := s.baseURL() + accountValidation
+
+	params := make(map[string]interface{})
+	params["merchant_code"] = s.MerchantCode
+	params["channel_code"] = channel
+	params["account_number"] = acct
+
+	paramsBytes, _ := json.Marshal(params)
+
+	resp, err := helpers.NewReq(url, &paramsBytes, &headers)
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode() != 200 {
+		errRespose, err := models.UnmarshalAPIResponse(resp.Body())
+		if err != nil {
+			return nil, errors.New(string(resp.Body()))
+		}
+		return nil, errors.New(errRespose.Detail)
+	}
+	response, err := models.UnmarshalAccountValidationRes(resp.Body())
 	if err != nil {
 		return nil, err
 	}
