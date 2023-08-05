@@ -17,9 +17,10 @@ type SasaPay struct {
 	ClientSecret string
 	MerchantCode string
 	cacheToken   models.AccessTokenResponse
+	Showlogs     bool
 }
 
-func NewSasaPay(clientId string, clientSecret string, merchantcode string, environment int) *SasaPay {
+func NewSasaPay(clientId string, clientSecret string, merchantcode string, environment int, showLogs bool) *SasaPay {
 	var accessToken = models.AccessTokenResponse{}
 
 	return &SasaPay{
@@ -28,6 +29,7 @@ func NewSasaPay(clientId string, clientSecret string, merchantcode string, envir
 		MerchantCode: merchantcode,
 		Environment:  environment,
 		cacheToken:   accessToken,
+		Showlogs:     showLogs,
 	}
 
 }
@@ -56,7 +58,7 @@ func (s *SasaPay) setAccessToken() (string, error) {
 			return "", err
 		}
 	}
-	
+
 	return s.cacheToken.AccessToken, nil
 }
 
@@ -80,7 +82,8 @@ func (s *SasaPay) RegisterCallBackUrl(confirmationUrl string) (*models.RegisterC
 	reqEntityBytes, _ := json.Marshal(params)
 	headers["Authorization"] = "Bearer " + token
 	url := s.baseURL() + registerCallBack
-	res, err := helpers.NewReq(url, &reqEntityBytes, &headers)
+
+	res, err := helpers.NewReq(url, &reqEntityBytes, &headers, s.Showlogs)
 	if err != nil {
 		return nil, &models.RequestError{StatusCode: res.StatusCode(), Message: string(res.Body()), Url: res.LocalAddr().String()}
 	}
@@ -105,7 +108,7 @@ func (s *SasaPay) Customer2Business(body models.C2BRequest) (*models.C2BResponse
 		return nil, err
 	}
 
-	resp, err := helpers.NewReq(url, &reqbody, &headers)
+	resp, err := helpers.NewReq(url, &reqbody, &headers, s.Showlogs)
 	if err != nil {
 		return nil, err
 	}
@@ -139,7 +142,7 @@ func (s *SasaPay) C2BProcess(checkoutRequestID string, otpCode string) (*models.
 	url := s.baseURL() + c2bProcess
 
 	paramsBytes, _ := json.Marshal(params)
-	resp, err := helpers.NewReq(url, &paramsBytes, &headers)
+	resp, err := helpers.NewReq(url, &paramsBytes, &headers, s.Showlogs)
 	if err != nil {
 		return nil, err
 	}
@@ -171,7 +174,7 @@ func (s *SasaPay) Business2Customer(params models.B2CRequest) (*models.B2CRespon
 
 	body, _ := params.Marshal()
 
-	resp, err := helpers.NewReq(url, &body, &headers)
+	resp, err := helpers.NewReq(url, &body, &headers, s.Showlogs)
 	if err != nil {
 		return nil, err
 	}
@@ -201,7 +204,7 @@ func (s *SasaPay) Business2Business(params models.B2BRequest) (*models.B2BRespon
 	url := s.baseURL() + b2bUrl
 
 	body, _ := params.Marshal()
-	resp, err := helpers.NewReq(url, &body, &headers)
+	resp, err := helpers.NewReq(url, &body, &headers, s.Showlogs)
 	if err != nil {
 		return nil, err
 	}
@@ -232,7 +235,7 @@ func (s *SasaPay) CheckTransactionStatus(checkoutRequestId string) (*models.Tran
 	params["MerchantCode"] = s.MerchantCode
 	params["CheckoutRequestId"] = checkoutRequestId
 	paramsBytes, _ := json.Marshal(params)
-	resp, err := helpers.NewReq(url, &paramsBytes, &headers)
+	resp, err := helpers.NewReq(url, &paramsBytes, &headers, s.Showlogs)
 	if err != nil {
 		return nil, err
 	}
@@ -265,7 +268,7 @@ func (s *SasaPay) VerifyTransaction(transactionCode string) (*models.VerifyTrans
 	params["MerchantCode"] = s.MerchantCode
 	params["TransactionCode"] = transactionCode
 	paramsBytes, _ := json.Marshal(params)
-	resp, err := helpers.NewReq(url, &paramsBytes, &headers)
+	resp, err := helpers.NewReq(url, &paramsBytes, &headers, s.Showlogs)
 	if err != nil {
 		return nil, err
 	}
@@ -290,7 +293,7 @@ func (s *SasaPay) CheckMerchantBalance() (*models.MerchantBalanceResp, error) {
 	headers := make(map[string]string)
 	headers["Authorization"] = "Bearer " + token
 	url := s.baseURL() + check_merchant_balance + s.MerchantCode
-	resp, err := helpers.NewReq(url, nil, &headers)
+	resp, err := helpers.NewReq(url, nil, &headers, s.Showlogs)
 	if err != nil {
 		return nil, err
 	}
@@ -317,7 +320,7 @@ func (s *SasaPay) Business2Benefiary(params models.Business2BeneficiaryReq) (*mo
 	url := s.baseURL() + business2Beneficiary
 
 	body, _ := params.Marshal()
-	resp, err := helpers.NewReq(url, &body, &headers)
+	resp, err := helpers.NewReq(url, &body, &headers, s.Showlogs)
 	if err != nil {
 		return nil, err
 	}
@@ -350,7 +353,7 @@ func (s *SasaPay) AccountValidate(acct string, channel string) (*models.AccountV
 
 	paramsBytes, _ := json.Marshal(params)
 
-	resp, err := helpers.NewReq(url, &paramsBytes, &headers)
+	resp, err := helpers.NewReq(url, &paramsBytes, &headers, s.Showlogs)
 	if err != nil {
 		return nil, err
 	}

@@ -9,15 +9,14 @@ import (
 
 var clientId = "XXXXXX"
 var clientSecret = "XXXXXXX"
-var sp = sasapay.NewSasaPay(clientId, clientSecret, "1234", int(sasapay.Production))
+var sp = sasapay.NewSasaPay(clientId, clientSecret, "1234", int(sasapay.Production), true)
 
-func main(){
+func main() {
 	TestC2B(&testing.T{})
 }
 
 func TestC2B(t *testing.T) {
 	response, err := sp.Customer2Business(models.C2BRequest{
-
 		MerchantCode:     sp.MerchantCode,
 		Currency:         "KES",
 		NetworkCode:      "63902",
@@ -31,12 +30,12 @@ func TestC2B(t *testing.T) {
 		t.Error(err)
 	}
 
-	respCcbProcess, err := sp.C2BProcess(response.CheckoutRequestID, "4345")
+	// respCcbProcess, err := sp.C2BProcess(response.CheckoutRequestID, "4345")
 
-	if err != nil {
-		t.Error(err)
-	}
-	t.Log(respCcbProcess.Detail)
+	// if err != nil {
+	// 	t.Error(err)
+	// }
+	t.Log(response.Detail)
 
 }
 func TestB2c(t *testing.T) {
