@@ -11,6 +11,8 @@ var clientId = "XXXXXX"
 var clientSecret = "XXXXXXX"
 var sp = sasapay.NewSasaPay(clientId, clientSecret, "1234", int(sasapay.Production), true)
 
+
+
 func main() {
 	TestC2B(&testing.T{})
 }
