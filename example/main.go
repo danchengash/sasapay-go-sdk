@@ -30,11 +30,11 @@ func TestC2B(t *testing.T) {
 		t.Error(err)
 	}
 
-	// respCcbProcess, err := sp.C2BProcess(response.CheckoutRequestID, "4345")
+	_, err = sp.C2BProcess(response.CheckoutRequestID, "4345")
 
-	// if err != nil {
-	// 	t.Error(err)
-	// }
+	if err != nil {
+		t.Error(err)
+	}
 	t.Log(response.Detail)
 
 }
