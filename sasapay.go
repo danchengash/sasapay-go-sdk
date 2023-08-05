@@ -75,6 +75,8 @@ func (s *SasaPay) RegisterCallBackUrl(confirmationUrl string) (*models.RegisterC
 		return nil, err
 	}
 
+	
+
 	headers := make(map[string]string)
 	params := make(map[string]interface{})
 	params["MerchantCode"] = s.MerchantCode
